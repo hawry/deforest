@@ -1,2 +1,4 @@
-VERSION = "0.1.1"
+VERSION = "0.2.0"
 LOGGER = "deforest"
+EXIT_NOTFOUND = 1
+EXIT_PARSEERR = 2
