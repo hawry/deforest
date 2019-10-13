@@ -21,7 +21,13 @@ class DeforestCleaner():
         version = self.raw["info"]["version"] or "no-version"
         return self._namify(title,version)
 
+    def get_title_and_version_all(self,index):
+        return self.get_title_and_version()
+
     def get_raw(self):
+        return self.raw
+
+    def get_raw_all(self,index):
         return self.raw
 
     def convert(self):
@@ -29,7 +35,7 @@ class DeforestCleaner():
         self._load()
         self._clean_all_keys()
         self._dump()
-        return self.processed
+        return [self.processed]
 
     def _clean_all_keys(self):
         self._cleanup_keys(self.raw)
@@ -55,3 +61,6 @@ class DeforestCleaner():
 
     def _dump(self):
         self.processed = yaml.safe_dump(self.raw)
+
+    def number_results(self):
+        return 1
