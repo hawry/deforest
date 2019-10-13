@@ -1,36 +1,52 @@
+import coloredlogs
+import logging
 import click
-import json
+import sys
+from constant import VERSION, LOGGER, EXIT_NOTFOUND
+from filecleaner import ForestCleaner
+from filecreator import FileCreator
 
-from constant import VERSION, LOGGER
-from cleaner import DeforestCleaner
-from solution import Solution
 
 @click.command()
 @click.argument("infile")
-@click.option("--outfile","-o", help="specify output file, default is ./<title>-<version>.<format>, ignored if input is a CloudFormation template and the template contains more than one ApiGateway resource)")
-@click.option("--format","-f", default="yaml", show_default=True, type=click.Choice(["yaml","json"]), help="output format")
-@click.option("--indent", "-i", default=4,type=int, help="if output format is json, specify indentation")
+@click.option("--outfile", "-o", help="specify output file, default is ./<title>-<version>.<format>, ignored if input is a CloudFormation template and the template contains more than one ApiGateway resource)")
+@click.option("--format", "-f", default="yaml", show_default=True, type=click.Choice(["yaml", "json"]), help="output format")
+@click.option("--indent", "-i", default=4, type=int, help="if output format is json, specify indentation")
+@click.option("--debug", "-d", default=False, is_flag=True, help="if enabled, show debug logs")
+@click.option("--no-ignore", default=False, is_flag=True, help="if set, deforest will export paths marked as ignored")
 @click.version_option(VERSION)
-def main(infile,outfile,format,indent):
-    with open(infile, "r") as fh:
-        d = fh.read()
+def main(infile, outfile, format, indent, debug, no_ignore):
+    set_log_level(debug)
+    logging.debug("parsing file '{}'".format(infile))
+    d = read_file(infile)
+    logging.debug("read {} bytes from file".format(len(d)))
 
-    cleaner = Solution(d).cleaner()
-    result = cleaner.convert()
+    f = ForestCleaner(d)
+    f.allow_ignored = no_ignore
+    cleaned = f.clean()
 
-    filename = None
-    if outfile and len(result) < 2:
-        filename = outfile
-    else:
-        print("output will be in {} files, ignoring --outfile flag setting".format(len(result)))
+    logging.debug("expected output {} files".format(len(cleaned)))
 
-    for i,r in enumerate(result):
-        tfile = filename
-        if filename is None:
-            tfile = "{}.{}".format(cleaner.get_title_and_version_all(i),"json" if format == "json" else "yaml")
+    fw = FileCreator(cleaned)
+    fw.format = format
+    fw.filename = outfile
+    fw.write_to_file()
 
-        with open(tfile,"w+") as fh:
-            if format == "json":
-                fh.write(json.dumps(cleaner.get_raw_all(i), indent=indent))
-            else:
-                fh.write(r)
+
+def set_log_level(debug):
+    log_name = logging.getLogger(LOGGER)
+    log_level = "INFO"
+    log_format = '%(levelname)s: %(message)s'
+    if debug:
+        log_level = "DEBUG"
+    coloredlogs.install(level=log_level, fmt=log_format)
+
+
+def read_file(filename):
+    try:
+        with open(filename, "r") as fh:
+            return fh.read()
+    except IOError as e:
+        logging.error("could not read file '{}': {}".format(
+            filename, e.strerror))
+        sys.exit(EXIT_NOTFOUND)

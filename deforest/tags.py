@@ -1,5 +1,6 @@
 import yaml
 
+
 class GetAttTag(yaml.YAMLObject):
     tag = u'!GetAtt'
 
@@ -17,6 +18,7 @@ class GetAttTag(yaml.YAMLObject):
     def to_yaml(cls, dumper, data):
         return ''
 
+
 class SubTag(yaml.YAMLObject):
     tag = u'!Sub'
 
@@ -33,6 +35,7 @@ class SubTag(yaml.YAMLObject):
     @classmethod
     def to_yaml(cls, dumper, data):
         return ''
+
 
 class RefTag(yaml.YAMLObject):
     tag = u'!Ref'
