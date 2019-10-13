@@ -17,7 +17,7 @@ setuptools.setup(
     description="Remove all x-amazon tags from your OAS3 specification",
     long_description=long_desc,
     long_description_content_type="text/markdown",
-    url="https://github.com/hawry/deforester",
+    url="https://github.com/hawry/deforest",
     packages=setuptools.find_packages(),
     install_requires=[
         "pyyaml==5.1.1",
