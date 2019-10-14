@@ -15,7 +15,6 @@ class CloudFormationCleaner:
 
     def clean(self):
         logging.debug("{} clean".format(self))
-        logging.debug("checking {}".format(self.caller.result))
         if not CloudFormationCleaner.KEY_CF_FIELD in self.caller.result:
             self.caller.result = [self.caller.result]
             return
@@ -50,7 +49,6 @@ class DefaultCleaner:
 
     def clean(self):
         logging.debug("{} clean".format(self))
-        logging.debug("checking {}".format(self.caller.result))
         self.copy = self.caller.result
         for i in self.copy:
             self._clean(i)
@@ -84,7 +82,6 @@ class IgnoreCleaner:
             if isinstance(v[k], dict):
                 if IgnoreCleaner.DEFOREST_IGNORE_KEY in v[k]:
                     if v[k][IgnoreCleaner.DEFOREST_IGNORE_KEY] is True:
-                        logging.debug("removing {}".format(v[k]))
                         del v[k]
                 else:
                     self._clean(v[k])
