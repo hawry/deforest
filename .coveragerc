@@ -1,0 +1,6 @@
+[run]
+omit = 
+  # ignore test files
+  deforest/tests/*
+  # ignore files containing only constants
+  deforest/constant.py
