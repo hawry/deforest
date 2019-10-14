@@ -38,6 +38,9 @@ class CloudFormationCleaner:
     def _has_body(self, node):
         return CloudFormationCleaner.KEY_CF_PROPERTIES in node and CloudFormationCleaner.KEY_CF_BODY in node[CloudFormationCleaner.KEY_CF_PROPERTIES]
 
+    def __str__(self):
+        return "CloudFormationCleaner"
+
 
 class DefaultCleaner:
     keys = ["x-amazon"]
@@ -62,6 +65,9 @@ class DefaultCleaner:
                 if isinstance(v[k], dict):
                     self._clean(v[k])
 
+    def __str__(self):
+        return "DefaultCleaner"
+
 
 class IgnoreCleaner:
     DEFOREST_IGNORE_KEY = "x-deforest-ignore"
@@ -85,3 +91,6 @@ class IgnoreCleaner:
                         del v[k]
                 else:
                     self._clean(v[k])
+
+    def __str__(self):
+        return "IgnoreCleaner"
