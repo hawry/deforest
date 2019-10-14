@@ -1,6 +1,6 @@
 # deforest
 
-[![PyPI version](https://badge.fury.io/py/deforest.svg)](https://badge.fury.io/py/deforest)
+[![PyPI version](https://badge.fury.io/py/deforest.svg)](https://badge.fury.io/py/deforest) [![Build Status](https://travis-ci.com/hawry/deforest.svg?branch=master)](https://travis-ci.com/hawry/deforest)
 
 Remove all `x-amazon`-tags from your Open API 3 or Swagger 2 specification. Useful if you are using Cloudformation to specify your API Gateways, and want to provide your consumers with the same specification but not wanting to disclose your internal Amazon integrations.
 
