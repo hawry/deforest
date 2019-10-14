@@ -1,10 +1,13 @@
-import logging
 from Queue import Queue
-from tags import GetAttTag, SubTag, RefTag
-import yaml
-from cleaners import DefaultCleaner, CloudFormationCleaner, IgnoreCleaner
+import logging
 import sys
-from constant import EXIT_PARSEERR
+
+import yaml
+
+import cleaners
+import tags
+import cleaners
+import constant
 
 
 class ForestCleaner:
@@ -24,7 +27,7 @@ class ForestCleaner:
             self.result = yaml.safe_load(self.data)
         except yaml.scanner.ScannerError as e:
             logging.error("could not parse file: {}".format(e))
-            sys.exit(EXIT_PARSEERR)
+            sys.exit(constant.EXIT_PARSEERR)
 
     def _create_queue(self):
         logging.debug("creating cleaner queue")
@@ -32,14 +35,16 @@ class ForestCleaner:
         logging.debug("created queue with size {}".format(
             cleaner_queue.qsize()))
 
-        cleaner_queue.put(CloudFormationCleaner(self))
+        cleaner_queue.put(cleaners.CloudFormationCleaner(self))
 
-        cleaner_queue.put(DefaultCleaner(self))
+        cleaner_queue.put(cleaners.DefaultCleaner(self))
 
         if not self.allow_ignored:
-            cleaner_queue.put(IgnoreCleaner(self))
+            cleaner_queue.put(cleaners.IgnoreCleaner(self))
         else:
             logging.info("allowing x-deforest-ignore paths")
+        logging.debug(
+            "cleaning will use {} methods".format(cleaner_queue.qsize()))
         self.cleaner_queue = cleaner_queue
 
     def clean(self):
@@ -50,12 +55,13 @@ class ForestCleaner:
 
     def _enable_cf_tags(self):
         logging.debug("enabling CF tags")
-        yaml.SafeLoader.add_constructor('!GetAtt', GetAttTag.from_yaml)
-        yaml.SafeLoader.add_constructor('!Sub', SubTag.from_yaml)
-        yaml.SafeLoader.add_constructor('!Ref', RefTag.from_yaml)
-        yaml.SafeDumper.add_multi_representer(GetAttTag, GetAttTag.to_yaml)
-        yaml.SafeDumper.add_multi_representer(SubTag, SubTag.to_yaml)
-        yaml.SafeDumper.add_multi_representer(RefTag, RefTag.to_yaml)
+        aws_tags = ["!GetAtt", "!Sub", "!Ref", "!Base64", "!Cidr", "!ImportValue", "!GetAZs", "!FindInMap",
+                    "!Join", "!Select", "!Split", "!Transform", "!And", "!Equals", "!If", "!Not", "!Or"]
+        for t in aws_tags:
+            yaml.SafeLoader.add_constructor(t, tags.AWSTag.from_yaml)
+            yaml.SafeDumper.add_multi_representer(
+                tags.AWSTag, tags.AWSTag.to_yaml)
+        logging.debug("enabled {} tags".format(len(aws_tags)))
 
     @property
     def result(self):
