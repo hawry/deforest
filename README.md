@@ -14,6 +14,8 @@ Remove all `x-amazon`-tags from your Open API 3 or Swagger 2 specification. Usef
 - Handles JSON and YAML input
 - Handles JSON and YAML output (defaults to YAML)
 - Support for AWS CloudFormation templates
+  - AWS::ApiGateway::RestApi resource type
+  - AWS::Serverless::Api resource type
 
 # Usage
 
