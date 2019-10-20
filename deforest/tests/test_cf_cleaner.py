@@ -1,3 +1,4 @@
+import pytest
 import deforest.cleaners as cleaner
 
 
@@ -50,3 +51,41 @@ class TestCFCleaner:
         assert len(self.result) == 1
         assert "AWSTemplateFormatVersion" not in self.result[0]
         assert "info" in self.result[0]
+
+    def test_clean_cf_serverless_api(self):
+        self.result = {"AWSTemplateFormatVersion": "2010-09-09", "Description": "a sample template", "Resources": {"MyRestApi": {"Type": "AWS::Serverless::Api", "Properties": {
+            "DefinitionBody": {
+                "swagger": "2.0", "info": {"title": "a title", "version": "0.1"}
+            }
+        }}}}
+        sut = cleaner.CloudFormationCleaner(self)
+        sut.clean()
+        assert "AWSTemplateFormatVersion" not in self.result[0]
+        assert "info" in self.result[0]
+        assert len(self.result) == 1
+
+    def test_clean_cf_missing_body(self):
+        self.result = {"AWSTemplateFormatVersion": "2010-09-09", "Description": "a sample template", "Resources": {"MyRestApi": {"Type": "AWS::Serverless::Api", "Properties": {
+            "InvalidBody": {
+                "swagger": "2.0", "info": {"title": "a title", "version": "0.1"}
+            }
+        }}}}
+        sut = cleaner.CloudFormationCleaner(self)
+        with pytest.raises(cleaner.InvalidBodyProperty)as e:
+            assert sut.clean()
+        assert str(e.value) == "'could not find a valid body property'"
+
+    def test_clean_cf_and_srvless_apis(self):
+        self.result = {"AWSTemplateFormatVersion": "2010-09-09", "Description": "a sample template", "Resources": {"MyRestApi": {"Type": "AWS::ApiGateway::RestApi", "Properties": {
+            "Body": {
+                "swagger": "2.0", "info": {"title": "a title", "version": "0.1"}
+            }
+        }}, "MySecondsRestApi": {"Type": "AWS::Serverless::Api", "Properties": {"DefinitionBody": {"swagger": "2.0", "info": {"title": "second api"}}}}}}
+        sut = cleaner.CloudFormationCleaner(self)
+        sut.clean()
+
+        assert len(self.result) == 2
+        assert "AWSTemplateFormatVersion" not in self.result[0]
+        assert "AWSTemplateFormatVersion" not in self.result[1]
+        assert "info" in self.result[0]
+        assert "swagger" in self.result[1]
