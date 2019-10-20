@@ -25,8 +25,9 @@ class FileCreator:
         for d in self.data:
             fname = self.filename
             if self.filename is None:
-                logging.debug("setting filename {}".format(self._filename(d)))
-                fname = self._filename(d)
+                logging.debug("setting filename {}".format(
+                    self._specify_filename(d)))
+                fname = self._specify_filename(d)
             with open(fname, "w+") as fh:
                 if self.format == "json":
                     fh.write(json.dumps(d, indent=self.indent))
@@ -35,7 +36,7 @@ class FileCreator:
                     fh.write(yd)
             logging.info("saved to file {}".format(fname))
 
-    def _filename(self, content):
+    def _specify_filename(self, content):
         title = content["info"]["title"] or "no-title"
         version = content["info"]["version"] or "no-version"
         s = "{}-{}.{}".format(title.lower(), version.lower(), self.format)
