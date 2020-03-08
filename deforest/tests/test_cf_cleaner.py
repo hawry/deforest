@@ -1,8 +1,8 @@
-import pytest
+import unittest
 import deforest.cleaners as cleaner
 
 
-class TestCFCleaner:
+class TestCFCleaner(unittest.TestCase):
     result = None
 
     def test_clean_no_cf(self):
@@ -71,9 +71,9 @@ class TestCFCleaner:
             }
         }}}}
         sut = cleaner.CloudFormationCleaner(self)
-        with pytest.raises(cleaner.InvalidBodyProperty)as e:
-            assert sut.clean()
-        assert str(e.value) == "'could not find a valid body property'"
+        with self.assertRaises(cleaner.InvalidBodyProperty) as e:
+            sut.clean()
+            self.assertEqual('could not find a valid body property', str(e.exception))
 
     def test_clean_cf_and_srvless_apis(self):
         self.result = {"AWSTemplateFormatVersion": "2010-09-09", "Description": "a sample template", "Resources": {"MyRestApi": {"Type": "AWS::ApiGateway::RestApi", "Properties": {

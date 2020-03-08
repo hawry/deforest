@@ -1,13 +1,12 @@
-from Queue import Queue
+from queue import Queue
 import logging
 import sys
 
 import yaml
 
-import cleaners
-import tags
-import cleaners
-import constant
+import deforest.tags
+import deforest.cleaners
+import deforest.constant
 
 
 class ForestCleaner:

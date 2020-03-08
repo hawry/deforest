@@ -21,8 +21,14 @@ setuptools.setup(
     packages=setuptools.find_packages(),
     install_requires=[
         "pyyaml==5.1.1",
-        "click==6.7",
+        "click==7.0",
         "coloredlogs==10.0"
+    ],
+    tests_require=[
+        "parameterized",
+        "pytest",
+        "pytest-cov",
+        "coverage"
     ],
     classifiers=[
         "Programming Language :: Python :: 2.7",

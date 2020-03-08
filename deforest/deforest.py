@@ -1,21 +1,24 @@
-import coloredlogs
 import logging
 import click
 import sys
-from constant import VERSION, LOGGER, EXIT_NOTFOUND
-from filecleaner import ForestCleaner
-from filecreator import FileCreator
+import coloredlogs
+from .constant import VERSION, LOGGER, EXIT_NOTFOUND
+from .filecleaner import ForestCleaner
+from .filecreator import FileCreator
 
 
 @click.command()
 @click.argument("infile")
-@click.option("--outfile", "-o", help="specify output file, default is ./<title>-<version>.<format>, ignored if input is a CloudFormation template and the template contains more than one ApiGateway resource)")
-@click.option("--format", "-f", default="yaml", show_default=True, type=click.Choice(["yaml", "json"]), help="output format")
+@click.option("--outfile", "-o", help="specify output file, default is ./<title>-<version>.<format>, ignored if input "
+                                      "is a CloudFormation template and the template contains more than one "
+                                      "ApiGateway resource)")
+@click.option("--format", "-f", default="yaml", show_default=True, type=click.Choice(["yaml", "json"]), help="output "
+                                                                                                             "format")
 @click.option("--indent", "-i", default=4, type=int, help="if output format is json, specify indentation")
 @click.option("--debug", "-d", default=False, is_flag=True, help="if enabled, show debug logs")
 @click.option("--no-ignore", default=False, is_flag=True, help="if set, deforest will export paths marked as ignored")
 @click.version_option(VERSION)
-def main(infile, outfile, format, indent, debug, no_ignore):
+def main(infile, outfile, fmt, indent, debug, no_ignore):
     set_log_level(debug)
     logging.debug("parsing file '{}'".format(infile))
     d = read_file(infile)
@@ -28,9 +31,22 @@ def main(infile, outfile, format, indent, debug, no_ignore):
     logging.debug("expected output {} files".format(len(cleaned)))
 
     fw = FileCreator(cleaned)
-    fw.format = format
+    fw.format = fmt
     fw.filename = outfile
     fw.write_to_file()
+
+
+def deforest(raw_file, **kwargs):
+    _allowed_formats = ["yaml", "json"]
+    fmt = kwargs.get("fmt", "yaml")
+    allow_ignored = kwargs.get("allow_ignored", False)
+    if fmt not in _allowed_formats:
+        raise ValueError("fmt must be one of {}".format(_allowed_formats))
+
+    f = ForestCleaner(raw_file)
+    f.allow_ignored = allow_ignored
+    cleaned = f.clean()
+    return cleaned
 
 
 def set_log_level(debug):
