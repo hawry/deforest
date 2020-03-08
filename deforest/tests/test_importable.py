@@ -79,7 +79,7 @@ Resources:
                 requestParameters:
                   integration.request.header.custom_h1: method.request.header.h1
                 responses:
-                  2\d{2}:
+                  2\\d{2}:
                     statusCode: "200"
                   default:
                     statusCode: "400"
@@ -113,7 +113,7 @@ Resources:
                 requestParameters:
                   integration.request.querystring.type: method.request.querystring.q1
                 responses:
-                  2\d{2}:
+                  2\\d{2}:
                     statusCode: "200"
                   default:
                     statusCode: "400"
@@ -202,7 +202,7 @@ Resources:
                 requestParameters:
                   integration.request.header.custom_h1: method.request.header.h1
                 responses:
-                  2\d{2}:
+                  2\\d{2}:
                     statusCode: "200"
                   default:
                     statusCode: "400"
@@ -236,7 +236,7 @@ Resources:
                 requestParameters:
                   integration.request.querystring.type: method.request.querystring.q1
                 responses:
-                  2\d{2}:
+                  2\\d{2}:
                     statusCode: "200"
                   default:
                     statusCode: "400"
@@ -272,7 +272,7 @@ Resources:
             properties: {}
 """
 
-    parsed = {'swagger': '2.0', 'info': {'title': 'The second REST API sample', 'version': '1.0.1'}, 'definitions': {'Error': {'type': 'object', 'properties': {}}, 'RequestBodyModel': {'type': 'object', 'properties': {'id': {'type': 'integer'}, 'type': {'type': 'string', 'enum': ['dog', 'cat', 'fish']}, 'name': {'type': 'string'}, 'price': {'type': 'number', 'minimum': 25, 'maximum': 500}}, 'required': ['type', 'name', 'price']}}, 'basePath': '/v1', 'paths': {'/validation': {'post': {'security': [{'api_key': []}], 'parameters': [{'in': 'header', 'name': 'h1', 'required': True}, {'in': 'body', 'name': 'RequestBodyModel', 'schema': {'$ref': '#/definitions/RequestBodyModel'}, 'required': True}], 'responses': {'200': {'headers': {'test-method-response-header': {'type': 'string'}}, 'schema': {'items': {'$ref': '#/definitions/Error'}, 'type': 'array'}}}}, 'get': {'security': [{'api_key': []}], 'parameters': [{'name': 'q1', 'in': 'query', 'required': True}], 'responses': {'200': {'headers': {'test-method-response-header': {'type': 'string'}}, 'schema': {'items': {'$ref': '#/definitions/Error'}, 'type': 'array'}}}}}}, 'schemes': ['https'], 'produces': ['application/json']}, {'swagger': '2.0', 'info': {'title': 'ReqValidators Sample', 'version': '1.0.0'}, 'definitions': {'Error': {'type': 'object', 'properties': {}}, 'RequestBodyModel': {'type': 'object', 'properties': {'id': {'type': 'integer'}, 'type': {'type': 'string', 'enum': ['dog', 'cat', 'fish']}, 'name': {'type': 'string'}, 'price': {'type': 'number', 'minimum': 25, 'maximum': 500}}, 'required': ['type', 'name', 'price']}}, 'basePath': '/v1', 'paths': {'/validation': {'post': {'security': [{'api_key': []}], 'parameters': [{'in': 'header', 'name': 'h1', 'required': True}, {'in': 'body', 'name': 'RequestBodyModel', 'schema': {'$ref': '#/definitions/RequestBodyModel'}, 'required': True}], 'responses': {'200': {'headers': {'test-method-response-header': {'type': 'string'}}, 'schema': {'items': {'$ref': '#/definitions/Error'}, 'type': 'array'}}}}, 'get': {'security': [{'api_key': []}], 'parameters': [{'name': 'q1', 'in': 'query', 'required': True}], 'responses': {'200': {'headers': {'test-method-response-header': {'type': 'string'}}, 'schema': {'items': {'$ref': '#/definitions/Error'}, 'type': 'array'}}}}}}, 'schemes': ['https'], 'produces': ['application/json']}
+    parsed = [{'produces': ['application/json'], 'paths': {'/validation': {'post': {'responses': {'200': {'schema': {'items': {'$ref': '#/definitions/Error'}, 'type': 'array'}, 'headers': {'test-method-response-header': {'type': 'string'}}}}, 'security': [{'api_key': []}], 'parameters': [{'in': 'header', 'name': 'h1', 'required': True}, {'required': True, 'in': 'body', 'name': 'RequestBodyModel', 'schema': {'$ref': '#/definitions/RequestBodyModel'}}]}, 'get': {'security': [{'api_key': []}], 'parameters': [{'in': 'query', 'name': 'q1', 'required': True}], 'responses': {'200': {'schema': {'items': {'$ref': '#/definitions/Error'}, 'type': 'array'}, 'headers': {'test-method-response-header': {'type': 'string'}}}}}}}, 'definitions': {'Error': {'properties': {}, 'type': 'object'}, 'RequestBodyModel': {'properties': {'id': {'type': 'integer'}, 'type': {'type': 'string', 'enum': ['dog', 'cat', 'fish']}, 'price': {'maximum': 500, 'type': 'number', 'minimum': 25}, 'name': {'type': 'string'}}, 'type': 'object', 'required': ['type', 'name', 'price']}}, 'swagger': '2.0', 'schemes': ['https'], 'info': {'title': 'ReqValidators Sample', 'version': '1.0.0'}, 'basePath': '/v1'}, {'produces': ['application/json'], 'paths': {'/validation': {'post': {'responses': {'200': {'schema': {'items': {'$ref': '#/definitions/Error'}, 'type': 'array'}, 'headers': {'test-method-response-header': {'type': 'string'}}}}, 'security': [{'api_key': []}], 'parameters': [{'in': 'header', 'name': 'h1', 'required': True}, {'required': True, 'in': 'body', 'name': 'RequestBodyModel', 'schema': {'$ref': '#/definitions/RequestBodyModel'}}]}, 'get': {'security': [{'api_key': []}], 'parameters': [{'in': 'query', 'name': 'q1', 'required': True}], 'responses': {'200': {'schema': {'items': {'$ref': '#/definitions/Error'}, 'type': 'array'}, 'headers': {'test-method-response-header': {'type': 'string'}}}}}}}, 'definitions': {'Error': {'properties': {}, 'type': 'object'}, 'RequestBodyModel': {'properties': {'id': {'type': 'integer'}, 'type': {'type': 'string', 'enum': ['dog', 'cat', 'fish']}, 'price': {'maximum': 500, 'type': 'number', 'minimum': 25}, 'name': {'type': 'string'}}, 'type': 'object', 'required': ['type', 'name', 'price']}}, 'swagger': '2.0', 'schemes': ['https'], 'info': {'title': 'The second REST API sample', 'version': '1.0.1'}, 'basePath': '/v1'}]
 
     def test_invalid_format(self):
         with self.assertRaises(ValueError) as e:
