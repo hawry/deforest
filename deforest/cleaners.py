@@ -72,7 +72,7 @@ class DefaultCleaner:
         self.caller.result = self.copy
 
     def _clean(self, v):
-        for k in v.keys():
+        for k in list(v):
             if any(m in k for m in self.keys):
                 del v[k]
             else:
@@ -98,7 +98,7 @@ class IgnoreCleaner:
         self.caller.result = self.copy
 
     def _clean(self, v):
-        for k in v.keys():
+        for k in list(v):
             if isinstance(v[k], dict):
                 if IgnoreCleaner.DEFOREST_IGNORE_KEY in v[k]:
                     if v[k][IgnoreCleaner.DEFOREST_IGNORE_KEY] is True:

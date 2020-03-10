@@ -1,12 +1,11 @@
-from mock import patch, mock_open
-
-import pytest
-
+import unittest
+from parameterized import parameterized
+from unittest.mock import patch, mock_open
 from deforest.filecreator import FileCreator
 
 
-class TestFileCreator:
-    @pytest.mark.parametrize("fmt", [("yaml"), ("json")])
+class TestFileCreator(unittest.TestCase):
+    @parameterized.expand([["yaml"], ["json"]])
     def test_filename(self, fmt):
         sut = FileCreator(None)
         sut.format = fmt
@@ -15,7 +14,7 @@ class TestFileCreator:
 
         assert actual == "hello-world-1.0." + fmt
 
-    @pytest.mark.parametrize("fmt", [("yaml"), ("json")])
+    @parameterized.expand([["yaml"], ["json"]])
     def test_write_to_file(self, fmt):
         content = {"info": {"title": "hello world", "version": "1.0"}}
         fname = "thisisafilename.{}".format(fmt)
@@ -28,7 +27,7 @@ class TestFileCreator:
 
         open_mock.assert_called_with(fname, "w+")
 
-    @pytest.mark.parametrize("fmt", [("yaml"), ("json")])
+    @parameterized.expand([["yaml"], ["json"]])
     def test_write_to_file_assumed_filename(self, fmt):
         content = [{"info": {"title": "hello world", "version": "1.0"}}]
         expected = "hello-world-1.0.{}".format(fmt)
@@ -39,19 +38,19 @@ class TestFileCreator:
             sut.write_to_file()
         open_mock.assert_called_with(expected, "w+")
 
-    @pytest.mark.parametrize("indent", [(1), (2), (3), (4), (6), (8)])
+    @parameterized.expand([[1], [2], [3], [4], [6], [8]])
     def test_indent_property(self, indent):
         sut = FileCreator(None)
         sut.indent = indent
         assert sut.indent == indent
 
-    @pytest.mark.parametrize("fmt", [("yaml"), ("json")])
+    @parameterized.expand([["yaml"], ["json"]])
     def test_format_property(self, fmt):
         sut = FileCreator(None)
         sut.format = fmt
         assert sut.format == fmt
 
-    @pytest.mark.parametrize("fname", [("afilename"), ("anotherfilename")])
+    @parameterized.expand([["afilename"], ["anotherfilename"]])
     def test_filename_property(self, fname):
         sut = FileCreator(None)
         sut.filename = fname

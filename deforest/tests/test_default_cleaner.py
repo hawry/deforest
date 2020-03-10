@@ -1,7 +1,8 @@
+import unittest
 import deforest.cleaners as cleaner
 
 
-class TestIgnoreCleaner:
+class TestIgnoreCleaner(unittest.TestCase):
 
     def test_clean_(self):
         data = {"info": {"title": "hello world"}, "paths": {

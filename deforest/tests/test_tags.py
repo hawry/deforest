@@ -1,7 +1,8 @@
+import unittest
 import deforest.tags as tags
 
 
-class TestAWSTag:
+class TestAWSTag(unittest.TestCase):
     sut = tags.AWSTag('!GetAtt')
 
     def test_init(self):

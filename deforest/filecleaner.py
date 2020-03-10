@@ -1,13 +1,12 @@
-from Queue import Queue
+from queue import Queue
 import logging
 import sys
 
 import yaml
 
-import cleaners
-import tags
-import cleaners
-import constant
+import deforest.tags
+import deforest.cleaners
+import deforest.constant
 
 
 class ForestCleaner:
@@ -27,7 +26,7 @@ class ForestCleaner:
             self.result = yaml.safe_load(self.data)
         except yaml.scanner.ScannerError as e:
             logging.error("could not parse file: {}".format(e))
-            sys.exit(constant.EXIT_PARSEERR)
+            sys.exit(deforest.constant.EXIT_PARSEERR)
 
     def _create_queue(self):
         logging.debug("creating cleaner queue")
@@ -35,12 +34,12 @@ class ForestCleaner:
         logging.debug("created queue with size {}".format(
             cleaner_queue.qsize()))
 
-        cleaner_queue.put(cleaners.CloudFormationCleaner(self))
+        cleaner_queue.put(deforest.cleaners.CloudFormationCleaner(self))
 
-        cleaner_queue.put(cleaners.DefaultCleaner(self))
+        cleaner_queue.put(deforest.cleaners.DefaultCleaner(self))
 
         if not self.allow_ignored:
-            cleaner_queue.put(cleaners.IgnoreCleaner(self))
+            cleaner_queue.put(deforest.cleaners.IgnoreCleaner(self))
         else:
             logging.info("allowing x-deforest-ignore paths")
         logging.debug(
@@ -58,9 +57,9 @@ class ForestCleaner:
         aws_tags = ["!GetAtt", "!Sub", "!Ref", "!Base64", "!Cidr", "!ImportValue", "!GetAZs", "!FindInMap",
                     "!Join", "!Select", "!Split", "!Transform", "!And", "!Equals", "!If", "!Not", "!Or"]
         for t in aws_tags:
-            yaml.SafeLoader.add_constructor(t, tags.AWSTag.from_yaml)
+            yaml.SafeLoader.add_constructor(t, deforest.tags.AWSTag.from_yaml)
             yaml.SafeDumper.add_multi_representer(
-                tags.AWSTag, tags.AWSTag.to_yaml)
+                deforest.tags.AWSTag, deforest.tags.AWSTag.to_yaml)
         logging.debug("enabled {} tags".format(len(aws_tags)))
 
     @property
