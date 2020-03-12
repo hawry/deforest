@@ -36,13 +36,8 @@ def main(infile, outfile, fmt, indent, debug, no_ignore):
     fw.write_to_file()
 
 
-def deforest(raw_file, **kwargs):
-    _allowed_formats = ["yaml", "json"]
-    fmt = kwargs.get("fmt", "yaml")
+def deforest_file(raw_file, **kwargs):
     allow_ignored = kwargs.get("allow_ignored", False)
-    if fmt not in _allowed_formats:
-        raise ValueError("fmt must be one of {}".format(_allowed_formats))
-
     f = ForestCleaner(raw_file)
     f.allow_ignored = allow_ignored
     cleaned = f.clean()
