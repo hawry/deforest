@@ -12,7 +12,7 @@ from .filecreator import FileCreator
 @click.option("--outfile", "-o", help="specify output file, default is ./<title>-<version>.<format>, ignored if input "
                                       "is a CloudFormation template and the template contains more than one "
                                       "ApiGateway resource)")
-@click.option("--format", "-f", default="yaml", show_default=True, type=click.Choice(["yaml", "json"]), help="output "
+@click.option("--format", "-f", "fmt", default="yaml", show_default=True, type=click.Choice(["yaml", "json"]), help="output "
                                                                                                              "format")
 @click.option("--indent", "-i", default=4, type=int, help="if output format is json, specify indentation")
 @click.option("--debug", "-d", default=False, is_flag=True, help="if enabled, show debug logs")

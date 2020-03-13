@@ -1,6 +1,8 @@
 import unittest
+import tempfile
 import json
-from deforest.deforest import deforest
+from deforest.deforest import deforest_file, main
+from click.testing import CliRunner
 
 
 class TestImportableMethods(unittest.TestCase):
@@ -274,11 +276,16 @@ Resources:
 
     parsed = [{'produces': ['application/json'], 'paths': {'/validation': {'post': {'responses': {'200': {'schema': {'items': {'$ref': '#/definitions/Error'}, 'type': 'array'}, 'headers': {'test-method-response-header': {'type': 'string'}}}}, 'security': [{'api_key': []}], 'parameters': [{'in': 'header', 'name': 'h1', 'required': True}, {'required': True, 'in': 'body', 'name': 'RequestBodyModel', 'schema': {'$ref': '#/definitions/RequestBodyModel'}}]}, 'get': {'security': [{'api_key': []}], 'parameters': [{'in': 'query', 'name': 'q1', 'required': True}], 'responses': {'200': {'schema': {'items': {'$ref': '#/definitions/Error'}, 'type': 'array'}, 'headers': {'test-method-response-header': {'type': 'string'}}}}}}}, 'definitions': {'Error': {'properties': {}, 'type': 'object'}, 'RequestBodyModel': {'properties': {'id': {'type': 'integer'}, 'type': {'type': 'string', 'enum': ['dog', 'cat', 'fish']}, 'price': {'maximum': 500, 'type': 'number', 'minimum': 25}, 'name': {'type': 'string'}}, 'type': 'object', 'required': ['type', 'name', 'price']}}, 'swagger': '2.0', 'schemes': ['https'], 'info': {'title': 'ReqValidators Sample', 'version': '1.0.0'}, 'basePath': '/v1'}, {'produces': ['application/json'], 'paths': {'/validation': {'post': {'responses': {'200': {'schema': {'items': {'$ref': '#/definitions/Error'}, 'type': 'array'}, 'headers': {'test-method-response-header': {'type': 'string'}}}}, 'security': [{'api_key': []}], 'parameters': [{'in': 'header', 'name': 'h1', 'required': True}, {'required': True, 'in': 'body', 'name': 'RequestBodyModel', 'schema': {'$ref': '#/definitions/RequestBodyModel'}}]}, 'get': {'security': [{'api_key': []}], 'parameters': [{'in': 'query', 'name': 'q1', 'required': True}], 'responses': {'200': {'schema': {'items': {'$ref': '#/definitions/Error'}, 'type': 'array'}, 'headers': {'test-method-response-header': {'type': 'string'}}}}}}}, 'definitions': {'Error': {'properties': {}, 'type': 'object'}, 'RequestBodyModel': {'properties': {'id': {'type': 'integer'}, 'type': {'type': 'string', 'enum': ['dog', 'cat', 'fish']}, 'price': {'maximum': 500, 'type': 'number', 'minimum': 25}, 'name': {'type': 'string'}}, 'type': 'object', 'required': ['type', 'name', 'price']}}, 'swagger': '2.0', 'schemes': ['https'], 'info': {'title': 'The second REST API sample', 'version': '1.0.1'}, 'basePath': '/v1'}]
 
-    def test_invalid_format(self):
-        with self.assertRaises(ValueError) as e:
-            deforest(self.raw_file_input, fmt='invalid')
-
     def test_valid_format(self):
-        output = deforest(self.raw_file_input)
+        output = deforest_file(self.raw_file_input)
         self.maxDiff = None
         self.assertEqual(json.dumps(output, sort_keys=True), json.dumps(self.parsed, sort_keys=True))
+
+    def test_main_method(self):
+
+        with tempfile.NamedTemporaryFile() as tf:
+            tf.write(self.raw_file_input.encode('utf-8'))
+            tf.flush()
+            runner = CliRunner()
+            result = runner.invoke(main, [f"{tf.name}"])
+            assert result.exit_code == 0
