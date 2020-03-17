@@ -32,7 +32,7 @@ class FileCreator:
                 if self.format == "json":
                     fh.write(json.dumps(d, indent=self.indent))
                 else:
-                    yd = yaml.safe_dump(d)
+                    yd = yaml.safe_dump(d, sort_keys=False)
                     fh.write(yd)
             logging.info("saved to file {}".format(fname))
 

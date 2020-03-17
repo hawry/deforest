@@ -1,4 +1,3 @@
-VERSION = "0.3.3"
 LOGGER = "deforest"
 EXIT_NOTFOUND = 1
 EXIT_PARSEERR = 2

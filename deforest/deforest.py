@@ -2,7 +2,7 @@ import logging
 import click
 import sys
 import coloredlogs
-from .constant import VERSION, LOGGER, EXIT_NOTFOUND
+from .constant import LOGGER, EXIT_NOTFOUND
 from .filecleaner import ForestCleaner
 from .filecreator import FileCreator
 
@@ -17,7 +17,7 @@ from .filecreator import FileCreator
 @click.option("--indent", "-i", default=4, type=int, help="if output format is json, specify indentation")
 @click.option("--debug", "-d", default=False, is_flag=True, help="if enabled, show debug logs")
 @click.option("--no-ignore", default=False, is_flag=True, help="if set, deforest will export paths marked as ignored")
-@click.version_option(VERSION)
+@click.version_option()
 def main(infile, outfile, fmt, indent, debug, no_ignore):
     set_log_level(debug)
     logging.debug("parsing file '{}'".format(infile))

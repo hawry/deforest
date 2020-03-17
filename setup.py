@@ -1,14 +1,13 @@
 import setuptools
 import re
 import os
-from deforest.constant import VERSION
 
 with open("README.md", "r") as fh:
     long_desc = fh.read()
 
 setuptools.setup(
     name="deforest",
-    version=VERSION,
+    version="0.4.0",
     author="hawry",
     entry_points={
         "console_scripts": ["deforest=deforest.deforest:main"]
@@ -21,7 +20,7 @@ setuptools.setup(
     packages=setuptools.find_packages(),
     install_requires=[
         "pyyaml==5.1.1",
-        "click==7.0",
+        "click==7.1.1",
         "coloredlogs==10.0"
     ],
     tests_require=[
