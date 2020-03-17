@@ -2,7 +2,9 @@
 
 [![PyPI version](https://badge.fury.io/py/deforest.svg)](https://badge.fury.io/py/deforest) [![Build Status](https://travis-ci.com/hawry/deforest.svg?branch=master)](https://travis-ci.com/hawry/deforest)
 
-Remove all `x-amazon`-tags from your Open API 3 or Swagger 2 specification. Useful if you are using Cloudformation to specify your API Gateways, and want to provide your consumers with the same specification but not wanting to disclose your internal Amazon integrations.
+Remove all `x-amazon`-tags and integrations from your Open API 3 or Swagger 2 specification. Useful if you are using Cloudformation to specify your API Gateways, and want to provide your consumers with the same specification but not wanting to disclose your internal Amazon integrations.
+
+Try it out online at https://deforest.io
 
 # Installation
 
@@ -11,6 +13,7 @@ Remove all `x-amazon`-tags from your Open API 3 or Swagger 2 specification. Usef
 ## Features
 
 - Clean keys starting with the string `x-amazon`
+- Clean arbitrary paths using `x-deforest-ignore` keys
 - Handles JSON and YAML input
 - Handles JSON and YAML output (defaults to YAML)
 - Support for AWS CloudFormation templates
@@ -130,10 +133,6 @@ paths: {}
 ```
 
 If `x-deforest-ignore: false`, or missing, the node will be extracted as usual. If the runtime flag `--no-ignore` is set, the nodes will be extracted as usual as well.
-
-# Limitations
-
-The output file looses its order of the keys in the file, which shouldn't affect you if you're using a converter to create a graphical documentation/specification - but can be confusing if you have a specific internal order you wish to keep.
 
 # Contribute
 
