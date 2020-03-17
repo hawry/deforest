@@ -4,6 +4,6 @@ python:
 install:
   - pip install pytest pytest-cov
   - pip install parameterized
-  - pip install .
+  - python setup.py install
 script:
   - pytest

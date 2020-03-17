@@ -21,7 +21,7 @@ setuptools.setup(
     packages=setuptools.find_packages(),
     install_requires=[
         "pyyaml==5.1.1",
-        "click==7.0",
+        "click==7.1.1",
         "coloredlogs==10.0"
     ],
     tests_require=[
