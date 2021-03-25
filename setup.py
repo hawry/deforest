@@ -19,7 +19,7 @@ setuptools.setup(
     url="https://github.com/hawry/deforest",
     packages=setuptools.find_packages(),
     install_requires=[
-        "pyyaml==5.1.1",
+        "pyyaml==5.4",
         "click==7.1.1",
         "coloredlogs==10.0"
     ],
